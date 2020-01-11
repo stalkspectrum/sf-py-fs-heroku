@@ -14,6 +14,6 @@ def server_root():
 
 if __name__ == '__main__':
     if os.environ.get('APP_LOCATION') == 'heroku':
-        run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), server=gunicorn, workers=2)
+        run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), server='gunicorn', workers=2)
     else:
         run(host='localhost', port=8080, debug=True)
