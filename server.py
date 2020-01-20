@@ -76,6 +76,12 @@ def server_root():
         _OUTPUT = INDEX_FILE.read()
     return _OUTPUT
 
+@route('/success')
+def success_dir():
+    with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
+        _OUTPUT = SUCCESS_FILE.read()
+    return _OUTPUT
+
 @route('/api/generate/')
 def gen_one():
     _OUTPUT_ONE = {}
