@@ -79,13 +79,13 @@ def server_root():
 @route('/success')
 def success_dir():
     with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
-        _OUTPUT = SUCCESS_FILE.read()
-    return _OUTPUT
+        S_OUTPUT = SUCCESS_FILE.read()
+    return S_OUTPUT
 
 @route('/fail')
 def fail_dir():
-    _OUTPUT = HTTPError(500, 'Internal Server Error')
-    return _OUTPUT
+    F_OUTPUT = HTTPError(500, 'Internal Server Error')
+    return F_OUTPUT
 
 @route('/api/generate/')
 def gen_one():
