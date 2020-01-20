@@ -73,14 +73,13 @@ def generate_speech():
 @route('/')
 def server_root():
     with open('index.html', 'r', encoding='UTF-8') as INDEX_FILE:
-        _OUTPUT = INDEX_FILE.read()
-    return _OUTPUT
+        R_OUTPUT = INDEX_FILE.read()
+    return R_OUTPUT
 
-@route('/success/')
+@route('/success')
 def success_dir():
     with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
         S_OUTPUT = SUCCESS_FILE.read()
-    #S_OUTPUT = HTTPError(200, 'OK')
     return S_OUTPUT
 
 @route('/fail')
