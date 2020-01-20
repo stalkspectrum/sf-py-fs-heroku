@@ -2,8 +2,8 @@ import os
 import random
 from bottle import route
 from bottle import run
-# from bottle import HTTPError
-# from bottle import request
+from bottle import HTTPError
+from bottle import request
 
 beginnings = [
     "В то же время,",
@@ -80,6 +80,11 @@ def server_root():
 def success_dir():
     with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
         _OUTPUT = SUCCESS_FILE.read()
+    return _OUTPUT
+
+@route('/fail')
+def fail_dir():
+    _OUTPUT = HTTPError(500, 'Internal Server Error')
     return _OUTPUT
 
 @route('/api/generate/')
