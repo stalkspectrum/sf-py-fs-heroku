@@ -78,8 +78,9 @@ def server_root():
 
 @route('/success')
 def success_dir():
-    with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
-        S_OUTPUT = SUCCESS_FILE.read()
+    #with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
+        #S_OUTPUT = SUCCESS_FILE.read()
+    S_OUTPUT = HTTPError(200, 'OK')
     return S_OUTPUT
 
 @route('/fail')
