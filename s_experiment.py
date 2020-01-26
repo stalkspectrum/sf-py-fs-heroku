@@ -8,8 +8,17 @@ from bottle import request
 #from bottle import run
 import sentry_sdk
 from sentry_sdk.integrations.bottle import BottleIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
-sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'), integrations=[BottleIntegration()])
+sentry_logging = LoggingIntegration(
+    level=logging.INFO,
+    event_level=logging.ERROR
+)
+
+#sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'), integrations=[BottleIntegration()])
+sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'), integrations=[sentry_logging])
+LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.DEBUG)
 
 app = Bottle()
 
@@ -93,7 +102,9 @@ def success_dir():
 
 @app.route('/fail')
 def fail_dir():
+    F_OUTPUT = HTTPError(500, 'Internal Server Error')
     raise RuntimeError('There is an error of /fail and Heroku')
+    return F_OUTPUT
 
 @app.route('/crash')
 def crash_dir():
