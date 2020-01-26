@@ -1,9 +1,20 @@
 import os
 import random
-from bottle import route
-from bottle import run
+from bottle import Bottle
 from bottle import HTTPError
 from bottle import request
+#from bottle import route
+#from bottle import run
+import sentry_sdk
+from sentry_sdk.integrations.bottle import BottleIntegration
+
+sentry_sdk.init(
+    dsn="https://6bd2d39cdb25407385f1dcfc9c40527d@sentry.io/1850908",
+    integrations=[BottleIntegration()]
+)
+#sentry_sdk.init(dsn=os.environ.get('SENTRY_DSN'), integrations=[BottleIntegration()])
+
+app = Bottle()
 
 beginnings = [
     "В то же время,",
@@ -70,30 +81,34 @@ def generate_speech():
         ])
     return speech
 
-@route('/')
+@app.route('/')
 def server_root():
     with open('index.html', 'r', encoding='UTF-8') as INDEX_FILE:
         R_OUTPUT = INDEX_FILE.read()
     return R_OUTPUT
 
-@route('/success')
+@app.route('/success')
 def success_dir():
     with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
         S_OUTPUT = SUCCESS_FILE.read()
     return S_OUTPUT
 
-@route('/fail')
+@app.route('/fail')
 def fail_dir():
+    raise RuntimeError('There is an error of /fail')
+
+@app.route('/crash')
+def crash_dir():
     F_OUTPUT = HTTPError(500, 'Internal Server Error')
     return F_OUTPUT
 
-@route('/api/generate/')
+@app.route('/api/generate/')
 def gen_one():
     _OUTPUT_ONE = {}
     _OUTPUT_ONE['message'] = generate_speech()
     return _OUTPUT_ONE
 
-@route('/api/generate/<number:int>')
+@app.route('/api/generate/<number:int>')
 def gen_few(number):
     _OUTPUT_FEW = {}
     _OUTPUT_FEW['messages'] = [ generate_speech() for _X in range(number) ]
@@ -101,6 +116,6 @@ def gen_few(number):
 
 if __name__ == '__main__':
     if os.environ.get('APP_LOCATION') == 'heroku':
-        run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), server='gunicorn', workers=2)
+        app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), server='gunicorn', workers=2)
     else:
-        run(host='localhost', port=8080, debug=True)
+        app.run(host='localhost', port=8080, debug=True)

@@ -1,54 +1,106 @@
+import os
+import random
+from bottle import route
+from bottle import run
+from bottle import HTTPError
+from bottle import request
+
 beginnings = [
-    "Коллеги,",
     "В то же время,",
+    "Вместе с тем,",
+    "Коллеги,",
     "Однако,",
-    "Тем не менее,",
+    "С другой стороны,",
     "Следовательно,",
     "Соответственно,",
-    "Вместе с тем,",
-    "С другой стороны,",
+    "Тем не менее,",
 ]
 
 subjects = [
-    "парадигма цифровой экономики",
-    "контекст цифровой трансформации",
     "диджитализация бизнес-процессов",
+    "контекст цифровой трансформации",
+    "парадигма цифровой экономики",
     "прагматичный подход к цифровым платформам",
-    "совокупность сквозных технологий ",
     "программа прорывных исследований",
-    "ускорение блокчейн-транзакций ",
+    "совокупность сквозных технологий",
+    "ускорение блокчейн-транзакций",
     "экспоненциальный рост Big Data",
 ]
 
 verbs = [
-    "открывает новые возможности для",
-    "выдвигает новые требования ",
-    "несет в себе риски ",
-    "расширяет горизонты",
+    "выдвигает новые требования",
     "заставляет искать варианты",
     "не оставляет шанса для",
-    "повышает вероятность",
+    "несет в себе риски",
     "обостряет проблему",
+    "открывает новые возможности для",
+    "повышает вероятность",
+    "расширяет горизонты",
 ]
 
 actions = [
+    "бюджетного финансирования",
     "дальнейшего углубления",
-    "бюджетного финансирования"
-    "синергетического эффекта",
     "компрометации конфиденциальных",
-    "универсальной коммодизации",
     "несанкционированной кастомизации",
     "нормативного регулирования",
     "практического применения",
+    "синергетического эффекта",
+    "универсальной коммодизации",
 ]
 
 ends = [
-    "знаний и компетенций.",
-    "непроверенных гипотез.",
-    "волатильных активов.",
-    "опасных экспериментов.",
-    "государственно-частных партнёрств.",
-    "цифровых следов граждан.",
-    "нежелательных последствий.",
     "внезапных открытий.",
+    "волатильных активов.",
+    "государственно-частных партнёрств.",
+    "знаний и компетенций.",
+    "нежелательных последствий.",
+    "непроверенных гипотез.",
+    "опасных экспериментов.",
+    "цифровых следов граждан.",
 ]
+
+def generate_speech():
+    speech = ' '.join([
+        random.choice(beginnings),
+        random.choice(subjects),
+        random.choice(verbs),
+        random.choice(actions),
+        random.choice(ends)
+        ])
+    return speech
+
+@route('/')
+def server_root():
+    with open('index.html', 'r', encoding='UTF-8') as INDEX_FILE:
+        R_OUTPUT = INDEX_FILE.read()
+    return R_OUTPUT
+
+@route('/success')
+def success_dir():
+    with open('success.html', 'r', encoding='UTF-8') as SUCCESS_FILE:
+        S_OUTPUT = SUCCESS_FILE.read()
+    return S_OUTPUT
+
+@route('/fail')
+def fail_dir():
+    F_OUTPUT = HTTPError(500, 'Internal Server Error')
+    return F_OUTPUT
+
+@route('/api/generate/')
+def gen_one():
+    _OUTPUT_ONE = {}
+    _OUTPUT_ONE['message'] = generate_speech()
+    return _OUTPUT_ONE
+
+@route('/api/generate/<number:int>')
+def gen_few(number):
+    _OUTPUT_FEW = {}
+    _OUTPUT_FEW['messages'] = [ generate_speech() for _X in range(number) ]
+    return _OUTPUT_FEW
+
+if __name__ == '__main__':
+    if os.environ.get('APP_LOCATION') == 'heroku':
+        run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), server='gunicorn', workers=2)
+    else:
+        run(host='localhost', port=8080, debug=True)
