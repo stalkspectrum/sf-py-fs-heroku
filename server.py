@@ -95,7 +95,7 @@ def success_dir():
 
 @app.route('/fail')
 def fail_dir():
-    raise RuntimeError('There is an error of /fail')
+    raise RuntimeError('There is an error of /fail and Heroku')
 
 @app.route('/crash')
 def crash_dir():
