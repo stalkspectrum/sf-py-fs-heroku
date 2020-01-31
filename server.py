@@ -82,8 +82,19 @@ def generate_speech():
 def server_root():
     with open('index.html', 'r', encoding='UTF-8') as INDEX_FILE:
         R_OUTPUT = INDEX_FILE.read()
-        logging.info('GET index.html')
     return R_OUTPUT
+
+@app.route('/voting/vote')
+def vote_for():
+    with open('./vote.html', 'r', encoding='UTF-8') as VOTE_FILE:
+        V_OUTPUT = VOTE_FILE.read()
+    return V_OUTPUT
+
+@app.route('/voting/result')
+def vote_res():
+    with open('./result.html', 'r', encoding='UTF-8') as VRES_FILE:
+        W_OUTPUT = VRES_FILE.read()
+    return W_OUTPUT
 
 @app.route('/success')
 def success_dir():
